@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connection Request: My Valentine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=JetBrains+Mono&display=swap');
+        
+        body { 
+            background: linear-gradient(135deg, #ffe5ec 0%, #ffc2d1 100%);
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 2px solid white;
+            border-radius: 24px;
+            z-index: 10;
+        }
+
+        .floating-heart {
+            position: absolute;
+            color: #ff8fab;
+            pointer-events: none;
+            animation: float 4s ease-in infinite;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        .typewriter { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #fb6f92; }
+
+        #no-btn {
+            z-index: 999;
+            transition: all 0.15s ease-out;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="heart-bg"></div>
+
+    <div id="root" class="glass w-[90%] max-w-md p-8 shadow-2xl text-center relative">
+        
+        <div id="step-1">
+            <div class="mb-6 text-6xl">💌</div>
+            <h1 class="text-2xl font-bold text-[#fb6f92] mb-2">Incoming Data Packet...</h1>
+            <p class="text-pink-600/70 mb-8 italic">Origin: Your Tums</p>
+            <button onclick="startProposal()" class="bg-[#ff8fab] hover:bg-[#fb6f92] text-white font-bold py-3 px-12 rounded-full transition-all transform hover:scale-105 shadow-lg">
+                DECRYPT MESSAGE
+            </button>
+        </div>
+
+        <div id="step-2" class="hidden">
+            <div id="console" class="typewriter text-left leading-relaxed mb-8 bg-white/60 p-4 rounded-xl border border-pink-100 min-h-[150px]"></div>
+            
+            <div id="proposal-actions" class="hidden opacity-0 transition-opacity duration-1000">
+                <h2 class="text-3xl font-bold text-[#fb6f92] mb-8">Be my Valentine?</h2>
+                <div class="flex flex-col gap-3 items-center">
+                    <button onclick="success()" class="w-full bg-[#ff8fab] hover:bg-[#fb6f92] text-white py-4 rounded-full font-bold shadow-md transition-all transform hover:scale-105 active:scale-95">
+                        YES, 1000x YES!
+                    </button>
+                    <button id="no-btn" onmouseover="moveNo()" onclick="moveNo()" class="bg-white border-2 border-pink-400 text-pink-500 px-6 py-2 rounded-full font-bold text-sm">
+                        No (Error 404)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="step-3" class="hidden">
+            <div class="text-7xl mb-4 animate-bounce">✈️❤️</div>
+            <h1 class="text-3xl font-bold text-[#fb6f92] mb-2">Connection Established!</h1>
+            <p class="text-pink-700 font-medium px-4">Distance is just a variable. <br>My love for you is a constant.</p>
+            <div class="mt-8 p-3 bg-pink-100 rounded-lg border border-pink-200 text-xs text-pink-500 uppercase tracking-widest font-bold">
+                Status: Long-Distance Optimized
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const message = "Establishing secure connection...\n\nPinging your heart... Response received.\n\nEven though we're miles apart right now, you're the only one in my main loop. Distance doesn't stand a chance against our bandwidth.\n\nReady to commit?";
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 4000);
+        }
+        setInterval(createHeart, 400);
+
+        function startProposal() {
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.remove('hidden');
+            typeWriter(message, 'console');
+        }
+
+        function typeWriter(text, elementId) {
+            let i = 0;
+            const element = document.getElementById(elementId);
+            function typing() {
+                if (i < text.length) {
+                    element.innerHTML = text.substring(0, i + 1) + '<span class="animate-pulse">|</span>';
+                    i++;
+                    setTimeout(typing, 35);
+                } else {
+                    const actions = document.getElementById('proposal-actions');
+                    actions.classList.remove('hidden');
+                    setTimeout(() => actions.classList.add('opacity-100'), 100);
+                }
+            }
+            typing();
+        }
+
+        function moveNo() {
+            const btn = document.getElementById('no-btn');
+            const padding = 20; // Keeps it from touching the very edge
+            
+            // Calculate max width/height while subtracting button size and padding
+            const maxWidth = window.innerWidth - btn.offsetWidth - padding;
+            const maxHeight = window.innerHeight - btn.offsetHeight - padding;
+            
+            // Generate random coordinates within the safe zone
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxWidth));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxHeight));
+            
+            btn.style.position = 'fixed';
+            btn.style.left = `${randomX}px`;
+            btn.style.top = `${randomY}px`;
+        }
+
+        function success() {
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-3').classList.remove('hidden');
+            
+            // Confetti Explosion
+            const duration = 5 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+              confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff8fab', '#fb6f92'] });
+              confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff8fab', '#fb6f92'] });
+
+              if (Date.now() < end) {
+                requestAnimationFrame(frame);
+              }
+            }());
+        }
+    </script>
+</body>
+</html>
